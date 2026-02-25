@@ -1,15 +1,13 @@
 using System.Threading;
-using WpfApplication = System.Windows.Application;
-using WpfExitEventArgs = System.Windows.ExitEventArgs;
-using WpfStartupEventArgs = System.Windows.StartupEventArgs;
+using System.Windows;
 
 namespace Noten.App;
 
-public partial class App : WpfApplication
+public partial class App : Application
 {
     private Mutex? _singleInstanceMutex;
 
-    protected override void OnStartup(WpfStartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
         var createdNew = false;
         _singleInstanceMutex = new Mutex(true, "Noten.SingleInstance", out createdNew);
@@ -27,7 +25,7 @@ public partial class App : WpfApplication
         mainWindow.Show();
     }
 
-    protected override void OnExit(WpfExitEventArgs e)
+    protected override void OnExit(ExitEventArgs e)
     {
         _singleInstanceMutex?.ReleaseMutex();
         _singleInstanceMutex?.Dispose();
