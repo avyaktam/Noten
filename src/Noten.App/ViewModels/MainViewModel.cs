@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Documents;
@@ -254,7 +253,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         if (ActiveProject is null || doc is null) return;
         var range = new TextRange(doc.ContentStart, doc.ContentEnd);
         using var ms = new MemoryStream();
-        range.Save(ms, System.Windows.DataFormats.Rtf);
+        range.Save(ms, DataFormats.Rtf);
         ActiveProject.NotesRtf = System.Text.Encoding.UTF8.GetString(ms.ToArray());
         SaveSoon();
         RefreshSearch();
@@ -276,7 +275,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
         try
         {
-            range.Load(ms, System.Windows.DataFormats.Rtf);
+            range.Load(ms, DataFormats.Rtf);
         }
         catch
         {

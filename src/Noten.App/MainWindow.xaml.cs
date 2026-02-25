@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -12,13 +10,6 @@ using Noten.App.ViewModels;
 using Noten.App.Views;
 using Noten.Core.Models;
 using Noten.Core.Services;
-using WpfColor = System.Windows.Media.Color;
-using WpfColorConverter = System.Windows.Media.ColorConverter;
-using WpfBrushes = System.Windows.Media.Brushes;
-using WpfMessageBox = System.Windows.MessageBox;
-using WpfMessageBoxButton = System.Windows.MessageBoxButton;
-using WpfMessageBoxImage = System.Windows.MessageBoxImage;
-using WpfMessageBoxResult = System.Windows.MessageBoxResult;
 
 namespace Noten.App;
 
@@ -122,7 +113,7 @@ public partial class MainWindow : Window
     {
         if (_settings.ConfirmBeforeExit)
         {
-            var confirmed = WpfMessageBox.Show("Exit Noten?", "Confirm exit", WpfMessageBoxButton.YesNo, WpfMessageBoxImage.Question) == WpfMessageBoxResult.Yes;
+            var confirmed = MessageBox.Show("Exit Noten?", "Confirm exit", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
             if (!confirmed)
             {
                 return;
@@ -174,7 +165,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             _settings.StartWithWindows = _startupService.IsEnabled();
-            WpfMessageBox.Show($"Failed to update startup setting: {ex.Message}", "Noten", WpfMessageBoxButton.OK, WpfMessageBoxImage.Warning);
+            MessageBox.Show($"Failed to update startup setting: {ex.Message}", "Noten", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         PersistSettings();
@@ -191,7 +182,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             _settings.StartWithWindows = !_settings.StartWithWindows;
-            WpfMessageBox.Show($"Unable to change startup registration: {ex.Message}", "Noten", WpfMessageBoxButton.OK, WpfMessageBoxImage.Error);
+            MessageBox.Show($"Unable to change startup registration: {ex.Message}", "Noten", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -245,7 +236,7 @@ public partial class MainWindow : Window
 
         if (!_vm.RenameActiveProject(prompt.Value))
         {
-            WpfMessageBox.Show("Project name cannot be empty.", "Noten", WpfMessageBoxButton.OK, WpfMessageBoxImage.Warning);
+            MessageBox.Show("Project name cannot be empty.", "Noten", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -257,7 +248,7 @@ public partial class MainWindow : Window
         }
 
         var name = _vm.ActiveProject.Name;
-        var confirmed = WpfMessageBox.Show($"Delete project '{name}'?", "Confirm", WpfMessageBoxButton.YesNo, WpfMessageBoxImage.Warning) == WpfMessageBoxResult.Yes;
+        var confirmed = MessageBox.Show($"Delete project '{name}'?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
         if (!confirmed)
         {
             return;
@@ -303,7 +294,7 @@ public partial class MainWindow : Window
             var result = await _vm.ImportProjectAsync(dialog.FileName);
             if (result.Conflict == ProjectImportConflict.IdConflict)
             {
-                var replace = WpfMessageBox.Show("Project id conflict. Replace existing? (No = import as copy)", "Import", WpfMessageBoxButton.YesNo, WpfMessageBoxImage.Question) == WpfMessageBoxResult.Yes;
+                var replace = MessageBox.Show("Project id conflict. Replace existing? (No = import as copy)", "Import", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
                 _vm.ResolveImportConflict(result.Project, replace);
             }
 
@@ -313,9 +304,11 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            WpfMessageBox.Show($"Import failed: {ex.Message}", "Import error", WpfMessageBoxButton.OK, WpfMessageBoxImage.Error);
+            MessageBox.Show($"Import failed: {ex.Message}", "Import error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
+
 
     private void SearchResults_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -367,9 +360,9 @@ public partial class MainWindow : Window
     {
         var isDark = mode is ThemeMode.Dark || mode is ThemeMode.System;
         Background = isDark
-            ? new SolidColorBrush((WpfColor)WpfColorConverter.ConvertFromString("#121316"))
-            : new SolidColorBrush((WpfColor)WpfColorConverter.ConvertFromString("#F3F4F8"));
-        Foreground = isDark ? WpfBrushes.WhiteSmoke : WpfBrushes.Black;
+            ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#121316"))
+            : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F3F4F8"));
+        Foreground = isDark ? Brushes.WhiteSmoke : Brushes.Black;
     }
 
     private void RegisterConfiguredHotkey(bool showError)
@@ -378,7 +371,7 @@ public partial class MainWindow : Window
         {
             if (showError)
             {
-                WpfMessageBox.Show("Hotkey registration failed. Try another combination.", "Hotkey", WpfMessageBoxButton.OK, WpfMessageBoxImage.Warning);
+                MessageBox.Show("Hotkey registration failed. Try another combination.", "Hotkey", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }
